@@ -1,103 +1,104 @@
-"
-" behavior
-"
-
-set nocompatible  " use vim, not vi settings
-set wildmenu      " command line tab completion menu
-set ruler         " show the cursor position all the time
-set showcmd       " display incomplete commands
-set incsearch     " do incremental searching
-set ignorecase    " ignore case in search
-set smartcase     " respect case in search if uppercase is used
-set nowrap        " do not wrap lines
-set backspace=indent,eol,start " backspace over all stuff
-set nu            " line numbers
-
-"
-" formatting
-"
-
-set autoindent
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
-set expandtab
-set smarttab
-set shiftround
-set listchars=tab:»·,trail:·
-set list
-
-"
-" filetype-specific
-"
-
-if has("autocmd")
-  filetype plugin indent on
-
-  au!
-  au FileType text                  setlocal tw=72 ts=2 sw=2 sts=2
-  au FileType html                  setlocal ts=2 sw=2 sts=2
-  au FileType xhtml                 setlocal ts=2 sw=2 sts=2
-  au FileType ruby                  setlocal ts=2 sw=2 sts=2
-  au FileType eruby                 setlocal ts=2 sw=2 sts=2
-  au FileType htmldjango            setlocal ts=2 sw=2 sts=2
-  au FileType coffee                setlocal ts=2 sw=2 sts=2
-
-  " text files
-  au BufRead,BufNewFile *.txt       setlocal filetype=text
-
-  " php files
-  au BufRead,BufNewFile *.module    setlocal filetype=php
-  au BufRead,BufNewFile *.inc       setlocal filetype=php
-  au BufRead,BufNewFile *.install   setlocal filetype=php
-
-  " html templates
-  au BufRead,BufNewFile *.mako      setlocal filetype=html
-  au BufRead,BufNewFile *.ftl       setlocal filetype=html
-
-  " css templates
-  au BufRead,BufNewFile *.less      setlocal filetype=css
-
-  " zsh configs and scripts
-  au BufRead,BufNewFile *.zsh-theme setlocal filetype=zsh
-  au BufRead,BufNewFile *.zsh-overrides setlocal filetype=zsh
-  au BufRead,BufNewFile *.zsh       setlocal filetype=zsh
-
-  " ruby files
-  au BufRead,BufNewFile *.cap       setlocal filetype=ruby
-
-  " When editing a file, always jump to the last known cursor position.
-  " Don't do it when the position is invalid or when inside an event handler
-  au BufReadPost *
-    \ if line("'\"") > 0 && line("'\"") <= line("$") |
-    \   exe "normal g`\"" |
-    \ endif
+" Use Vim settings, rather then Vi settings (much better!).
+" This must be first, because it changes other options as a side effect.
+set nocompatible
+set fileencoding=utf-8
+scriptencoding utf-8
+" TODO: this may not be in the correct place. It is intended to allow overriding <Leader>.
+" source ~/.vimrc.before if it exists.
+if filereadable(expand("~/.vimrc.before"))
+  source ~/.vimrc.before
 endif
 
-"
-" bindings
-"
+" ================ General Config ====================
 
-noremap <C-x> :source ~/.vimrc<Enter>
+set number                      "Line numbers are good
+set backspace=indent,eol,start  "Allow backspace in insert mode
+set history=1000                "Store lots of :cmdline history
+set showcmd                     "Show incomplete cmds down the bottom
+set showmode                    "Show current mode down the bottom
+set gcr=a:blinkon0              "Disable cursor blink
+set visualbell                  "No sounds
+set autoread                    "Reload files changed outside vim
 
-" NERDTree
-noremap <C-e> :NERDTreeToggle<Enter>
-noremap ,e :NERDTreeToggle<Enter>
-let NERDTreeMapActivateNode='<Space>'
+" This makes vim act like all other editors, buffers can
+" exist in the background without being in a window.
+" http://items.sjbach.com/319/configuring-vim-right
+set hidden
 
-" bufexplore
-noremap ,fe :BufExplorer<Enter>
-noremap ,fs :BufExplorerHorizontalSplit<Enter>
-noremap ,fv :BufExplorerVerticalSplit<Enter>
-
-"
-" visual
-"
-
-set background=light
+"turn on syntax highlighting
 syntax on
-set hlsearch
+
+" Change leader to a comma because the backslash is too far away
+" That means all \x commands turn into ,x
+" The mapleader has to be set before vundle starts loading all 
+" the plugins.
+let mapleader=","
+
+" =============== Vundle Initialization ===============
+" This loads all the plugins specified in ~/.vim/vundle.vim
+" Use Vundle plugin to manage all other plugins
+if filereadable(expand("~/.vim/vundles.vim"))
+  source ~/.vim/vundles.vim
+endif
+
+" ================ Turn Off Swap Files ==============
+
+set noswapfile
+set nobackup
+set nowb
+
+" ================ Persistent Undo ==================
+" Keep undo history across sessions, by storing in file.
+" Only works all the time.
+
+silent !mkdir ~/.vim/backups > /dev/null 2>&1
+set undodir=~/.vim/backups
+set undofile
+
+" ================ Indentation ======================
+
+set autoindent
+set smartindent
+set smarttab
+set shiftwidth=2
+set softtabstop=2
+set tabstop=2
+set expandtab
+
+filetype plugin on
+filetype indent on
+
+" Display tabs and trailing spaces visually
+set list listchars=tab:\ \ ,trail:·
+
+set nowrap       "Don't wrap lines
+set linebreak    "Wrap lines at convenient points
+
+" ================ Folds ============================
+
+set foldmethod=indent   "fold based on indent
+set foldnestmax=3       "deepest fold is 3 levels
+set nofoldenable        "dont fold by default
+
+" ================ Completion =======================
+
+set wildmode=list:longest
+set wildmenu                "enable ctrl-n and ctrl-p to scroll thru matches
+set wildignore=*.o,*.obj,*~ "stuff to ignore when tab completing
+set wildignore+=*vim/backups*
+set wildignore+=*sass-cache*
+set wildignore+=*DS_Store*
+set wildignore+=vendor/rails/**
+set wildignore+=vendor/cache/**
+set wildignore+=*.gem
+set wildignore+=log/**
+set wildignore+=tmp/**
+set wildignore+=*.png,*.jpg,*.gif
 
 "
-" plugins
-"
+
+" ================ Scrolling ========================
+
+set scrolloff=8         "Start scrolling when we're 8 lines away from margins
+set sidescrolloff=15
+set sidescroll=1
