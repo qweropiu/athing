@@ -10,4 +10,5 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: "apt-get -y install git vim"
   config.vm.provision "shell", inline: "cp /vagrant/bashrc /home/vagrant/.bashrc"
   config.vm.provision "shell", inline: "cp /vagrant/vimrc /home/vagrant/.vimrc"
+  config.vm.provision "shell", inline: "cp /vagrant/gitconfig /home/vagrant/.gitconfig"
 end
