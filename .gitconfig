@@ -1,0 +1,22 @@
+[user]
+    name = qweropiu
+    email = pikachu509@gmail.com
+
+[alias]
+    st = status
+    ci = commit
+    br = branch
+    co = checkout
+    df = diff
+    lg = log -p
+
+[core]
+    whitespace = trailing-space,space-before-tab,cr-at-eol
+    editor = vim
+    autocrlf = input
+
+[push]
+    default = nothing
+
+[color]
+    ui = true
